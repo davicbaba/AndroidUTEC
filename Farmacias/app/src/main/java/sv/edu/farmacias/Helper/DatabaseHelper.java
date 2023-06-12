@@ -84,6 +84,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("insert into producto(nombre) values('ACETAMINOFEN FORTE X 16 TABLETAS')");
         db.execSQL("insert into producto(nombre) values('ACETOSIL INFANTIL JARABE FRASCO 60ML(Acetaminofen)')");
         db.execSQL("insert into producto(nombre) values('HIBUPROFENO')");
+
+        List<Farmacia> farmacias = new ArrayList<Farmacia>();
+        farmacias.add(new Farmacia(0,"San Nicolas Mall San Gabriel","2555-5555", 13.7941792,-89.2274556 ));
+
+        InsertarFarmacias(db, farmacias);
+
+    }
+
+    private void InsertarFarmacias(SQLiteDatabase db,List<Farmacia> farmacias) {
+
+        // Recorrer la lista de farmacias
+        for (Farmacia farmacia : farmacias) {
+            // Crear un nuevo mapa de valores, donde los nombres de las columnas son las claves
+            ContentValues values = new ContentValues();
+            values.put("nombre", farmacia.getNombre());
+            values.put("telefono", farmacia.getTelefono());
+            values.put("latitud", farmacia.getLatitud());
+            values.put("longitud", farmacia.getLongitud());
+
+            // Insertar la nueva fila, el valor de retorno es el valor de la clave primaria
+            long newRowId = db.insert("Farmacia", null, values);
+        }
+
     }
 
     @Override
@@ -144,31 +167,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<Farmacia> obtenerFarmaciasEnRango(double latitud, double longitud, double radio) {
+    public List<Farmacia> obtenerFarmaciasEnRango(double latitud, double longitud, double distanciaEnKilometros) {
+        // Convertir la distancia a grados
+        double distanciaEnGrados = distanciaEnKilometros / 111;
+
+        // Crear una lista para almacenar los resultados
         List<Farmacia> farmacias = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
 
-        // Consulta para obtener las farmacias dentro del rango especificado
-        String query = "SELECT id, nombre, telefono, latitud, longitud " +
-                "FROM Farmacia " +
-                "WHERE STDistance(STPointFromText('POINT(' || ? || ' ' || ? || ')', 4326), geom) <= ?";
+        // Obtener la base de datos
+        SQLiteDatabase db = getReadableDatabase();
 
-        String[] selectionArgs = {String.valueOf(longitud), String.valueOf(latitud), String.valueOf(radio)};
+        // Definir la consulta SQL
+        String query = "SELECT * FROM Farmacia WHERE latitud BETWEEN ? AND ? AND longitud BETWEEN ? AND ?";
 
-        Cursor cursor = db.rawQuery(query, selectionArgs);
-        if (cursor.moveToFirst()) {
-            do {
-                int id = cursor.getInt(cursor.getColumnIndex("id"));
-                String nombre = cursor.getString(cursor.getColumnIndex("nombre"));
-                String telefono = cursor.getString(cursor.getColumnIndex("telefono"));
-                double farmaciaLatitud = cursor.getDouble(cursor.getColumnIndex("latitud"));
-                double farmaciaLongitud = cursor.getDouble(cursor.getColumnIndex("longitud"));
+        // Definir los parámetros de la consulta
+        String[] params = new String[] {
+                String.valueOf(latitud - distanciaEnGrados),
+                String.valueOf(latitud + distanciaEnGrados),
+                String.valueOf(longitud - distanciaEnGrados),
+                String.valueOf(longitud + distanciaEnGrados)
+        };
 
-                Farmacia farmacia = new Farmacia(id, nombre, telefono, farmaciaLatitud, farmaciaLongitud);
-                farmacias.add(farmacia);
-            } while (cursor.moveToNext());
+        // Realizar la consulta
+        Cursor cursor = db.rawQuery(query, params);
+
+        // Procesar los resultados
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String nombre = cursor.getString(cursor.getColumnIndex("nombre"));
+            String telefono = cursor.getString(cursor.getColumnIndex("telefono"));
+            double latitudFarmacia = cursor.getDouble(cursor.getColumnIndex("latitud"));
+            double longitudFarmacia = cursor.getDouble(cursor.getColumnIndex("longitud"));
+
+            // Crear un objeto Farmacia y añadirlo a la lista
+            Farmacia farmacia = new Farmacia(id, nombre,telefono ,latitudFarmacia, longitudFarmacia);
+            farmacias.add(farmacia);
         }
 
+        // Cerrar el cursor y la base de datos
         cursor.close();
         db.close();
 
