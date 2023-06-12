@@ -15,6 +15,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import android.Manifest;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import sv.edu.farmacias.Helper.DatabaseHelper;
@@ -92,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
 
     public void OnClickSearch(View view){
         Intent intent = new Intent(this, Search.class);
+
+        EditText search = findViewById(R.id.editTextTextPersonName4);
+        intent.putExtra("search", search.getText().toString());
         startActivity(intent);
     }
 

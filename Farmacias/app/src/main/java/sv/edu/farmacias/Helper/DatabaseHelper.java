@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sv.edu.farmacias.Model.Farmacia;
+import sv.edu.farmacias.Model.Multimedia;
+import sv.edu.farmacias.Model.Producto;
+import sv.edu.farmacias.Model.ProductoFarmacia;
 import sv.edu.farmacias.Model.UbicacionUsuario;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -34,8 +37,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         // Ejecutar las consultas para crear el índice espacial y cargar la extensión Spatialite
-        db.execSQL("SELECT CreateSpatialIndex('Farmacia', 'latitud', 'longitud')");
-        db.execSQL("SELECT load_extension('mod_spatialite')");
+        //db.execSQL("SELECT CreateSpatialIndex('Farmacia', 'latitud', 'longitud')");
+       // db.execSQL("SELECT load_extension('mod_spatialite')");
 
         StringBuilder createTableProducto = new StringBuilder()
                                                 .append("CREATE TABLE Producto (")
@@ -77,6 +80,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createTableProductoFarmacia.toString());
         db.execSQL(createTableMultimedia.toString());
         db.execSQL(createTableUbicacionUsuario.toString());
+        db.execSQL("insert into producto(nombre) values('ACETAMINOFEN BAYER 500MG X 100 TABLETAS')");
+        db.execSQL("insert into producto(nombre) values('ACETAMINOFEN FORTE X 16 TABLETAS')");
+        db.execSQL("insert into producto(nombre) values('ACETOSIL INFANTIL JARABE FRASCO 60ML(Acetaminofen)')");
+        db.execSQL("insert into producto(nombre) values('HIBUPROFENO')");
     }
 
     @Override
@@ -168,5 +175,65 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return farmacias;
     }
 
+    public List<Producto> GetProducts(String search) {
+        List<Producto> productos = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Consulta para obtener las farmacias dentro del rango especificado
+        String query = "SELECT * from producto where nombre LIKE '%"+search+"%' ";
+
+        String[] selectionArgs = {};
+        Cursor cursor = db.rawQuery(query,selectionArgs);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int codigo = cursor.getInt(cursor.getColumnIndex("codigo"));
+                String nombre = cursor.getString(cursor.getColumnIndex("nombre"));
+
+                Producto producto = new
+                        Producto(codigo, nombre,new ArrayList<ProductoFarmacia>(),new ArrayList<Multimedia>());
+                productos.add(producto);
+
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return productos;
+    }
+
+    public Producto GetById(String search) {
+
+        return new Producto(1,"test",new ArrayList<ProductoFarmacia>(),new ArrayList<Multimedia>());
+    }
+    public List<Multimedia> GetMultimediaProductos(int idProducto) {
+        List<Multimedia>  multimedias = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Consulta para obtener las farmacias dentro del rango especificado
+        String query = "SELECT * from Multimedia where idProducto ="+idProducto+" ";
+
+        String[] selectionArgs = {};
+        Cursor cursor = db.rawQuery(query,selectionArgs);
+        if (cursor.moveToFirst()) {
+            do {
+                int codigo = cursor.getInt(cursor.getColumnIndex("codigo"));
+                String url = cursor.getString(cursor.getColumnIndex("nombre"));
+                boolean esPrincipal = true;
+
+                int orden =cursor.getInt(cursor.getColumnIndex("orden"));
+
+                Multimedia multimedia = new
+                        Multimedia(codigo,url,esPrincipal,orden);
+                multimedias.add(multimedia);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return multimedias;
+    }
 
 }

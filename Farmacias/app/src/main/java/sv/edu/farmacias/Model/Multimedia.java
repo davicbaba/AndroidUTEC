@@ -1,6 +1,13 @@
 package sv.edu.farmacias.Model;
 
 public class Multimedia {
+    public Multimedia(int codigo, String url, boolean esPrincipal, int orden) {
+        this.codigo = codigo;
+        this.url = url;
+        this.esPrincipal = esPrincipal;
+        this.orden = orden;
+    }
+
     private int codigo;
     private String url;
     private boolean esPrincipal;
