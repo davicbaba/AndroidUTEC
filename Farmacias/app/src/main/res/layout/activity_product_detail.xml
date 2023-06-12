@@ -7,7 +7,7 @@
     tools:context=".ProductDetail">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/productimage"
         android:layout_width="260dp"
         android:layout_height="267dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -27,10 +27,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.067"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/productimage"
         app:layout_constraintVertical_bias="0.02" />
 
     <ListView
+        android:id="@+id/listafarmacias"
         android:layout_width="409dp"
         android:layout_height="430dp"
         app:layout_constraintBottom_toBottomOf="parent"

@@ -240,10 +240,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return productos;
     }
 
-    public Producto GetById(String search) {
+    public Producto GetById(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM Producto WHERE codigo=?", new String[]{String.valueOf(id)});
 
-        return new Producto(1,"test",new ArrayList<ProductoFarmacia>(),new ArrayList<Multimedia>());
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        Producto producto = new Producto(
+                cursor.getInt(0), // id del producto
+                cursor.getString(1), // nombre del producto
+                new ArrayList<>(), // productoFarmacia
+                new ArrayList<>() // multimedia
+        );
+        cursor.close();
+
+        List<Multimedia> multimedias = GetMultimediaProductos(id);
+
+        producto.setMultimedia(multimedias);
+
+        return producto;
     }
+
+
     public List<Multimedia> GetMultimediaProductos(int idProducto) {
         List<Multimedia>  multimedias = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -272,6 +291,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return multimedias;
+    }
+
+    public List<Farmacia> getFarmacias() {
+        List<Farmacia> farmacias = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Consulta para obtener las farmacias dentro del rango especificado
+         String query = "SELECT * from Farmacia";
+
+        String[] selectionArgs = {};
+        Cursor cursor = db.rawQuery(query,selectionArgs);
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndex("id"));
+                String nombre = cursor.getString(cursor.getColumnIndex("nombre"));
+                String telefono = cursor.getString(cursor.getColumnIndex("telefono"));
+                double latitudFarmacia = cursor.getDouble(cursor.getColumnIndex("latitud"));
+                double longitudFarmacia = cursor.getDouble(cursor.getColumnIndex("longitud"));
+
+                // Crear un objeto Farmacia y añadirlo a la lista
+                Farmacia farmacia = new Farmacia(id, nombre,telefono ,latitudFarmacia, longitudFarmacia);
+                farmacias.add(farmacia);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+        return farmacias;
     }
 
 }
