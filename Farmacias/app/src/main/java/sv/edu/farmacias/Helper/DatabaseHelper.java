@@ -192,6 +192,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 Producto producto = new
                         Producto(codigo, nombre,new ArrayList<ProductoFarmacia>(),new ArrayList<Multimedia>());
+
                 productos.add(producto);
 
             } while (cursor.moveToNext());
@@ -220,12 +221,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 int codigo = cursor.getInt(cursor.getColumnIndex("codigo"));
                 String url = cursor.getString(cursor.getColumnIndex("nombre"));
-                boolean esPrincipal = true;
-
+                int principal = cursor.getInt(cursor.getColumnIndex("esPrincipal"));
+                boolean esPrincipal = principal == 1 ? true : false;
                 int orden =cursor.getInt(cursor.getColumnIndex("orden"));
 
                 Multimedia multimedia = new
                         Multimedia(codigo,url,esPrincipal,orden);
+
                 multimedias.add(multimedia);
             } while (cursor.moveToNext());
         }

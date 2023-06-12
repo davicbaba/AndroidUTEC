@@ -47,14 +47,9 @@ public class Search extends AppCompatActivity {
 
     private void  CargarDatos(String searchdata)
     {
-        List<Producto> productos = new ArrayList<Producto>();
-        productos.add(new Producto(1,
-                "ACETAMINOFEN BAYER 500MG X 100 TABLETAS",
-                new ArrayList<ProductoFarmacia>(),
-                new ArrayList<Multimedia>()));
-        productos.add(new Producto(2,"ACETAMINOFEN FORTE X 16 TABLETAS", new ArrayList<ProductoFarmacia>(), new ArrayList<Multimedia>()));
-        productos.add(new Producto(3,"ACETOSIL INFANTIL JARABE FRASCO 60ML(Acetaminofen)",  new ArrayList<ProductoFarmacia>(), new ArrayList<Multimedia>()));
+        _db = new DatabaseHelper(getBaseContext());
 
+        List<Producto> productos = _db.GetProducts(searchdata);
         ListView listView = findViewById(R.id.lst_productos);
         ProductListViewAdapter customAdapter = new ProductListViewAdapter(this, productos);
         listView.setAdapter(customAdapter);
@@ -81,7 +76,6 @@ public class Search extends AppCompatActivity {
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener()
         {
-
             @Override
             public boolean onQueryTextSubmit(String query) {
                 CargarDatos(query);
