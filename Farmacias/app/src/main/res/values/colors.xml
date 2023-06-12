@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="anaranjado_app">#EE5050</color>
     <color name="anaranjado_dark">#772626</color>
+    <color name="anarajado_textview">#EE4C4C</color>
 </resources>
