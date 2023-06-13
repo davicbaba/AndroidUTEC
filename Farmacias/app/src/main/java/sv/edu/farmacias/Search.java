@@ -30,6 +30,7 @@ public class Search extends AppCompatActivity {
 
         Intent intent = getIntent();
         String search = intent.getStringExtra("search");
+        double distance =  Double.parseDouble(intent.getStringExtra("distance"));
 
         _db = new DatabaseHelper(getBaseContext());
 
@@ -41,16 +42,16 @@ public class Search extends AppCompatActivity {
             startActivity(intentMain);
         }
 
-        CargarDatos(search,GetIdsFarmaciasByUbicacion());
+        CargarDatos(search,GetIdsFarmaciasByUbicacion(distance));
     }
 
-    private String GetIdsFarmaciasByUbicacion()
+    private String GetIdsFarmaciasByUbicacion(double distanceInKm)
     {
         UbicacionUsuario ubicacion = _db.getUbicacionUsuario();
         String ids = "";
 
         List<Farmacia> farmacias =
-                _db.obtenerFarmaciasEnRango(ubicacion.getLatitud(), ubicacion.getLongitud(), 100);
+                _db.obtenerFarmaciasEnRango(ubicacion.getLatitud(), ubicacion.getLongitud(), distanceInKm);
 
         for (Farmacia objeto : farmacias) {
 
@@ -79,6 +80,7 @@ public class Search extends AppCompatActivity {
 
         Intent intent = getIntent();
         String search = intent.getStringExtra("search");
+        double distance =  Double.parseDouble(intent.getStringExtra("distance"));
 
         getMenuInflater().inflate(R.menu.menu, menu);
         MenuItem menuItem = menu.findItem(R.id.action_search);
@@ -98,7 +100,7 @@ public class Search extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                String idsFarmacias =  GetIdsFarmaciasByUbicacion();
+                String idsFarmacias =  GetIdsFarmaciasByUbicacion(distance);
                 CargarDatos(query,idsFarmacias);
                 return  true;
             }
@@ -106,7 +108,7 @@ public class Search extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
 
-                String idsFarmacias =  GetIdsFarmaciasByUbicacion();
+                String idsFarmacias =  GetIdsFarmaciasByUbicacion(distance);
                 CargarDatos(newText,idsFarmacias);
                 return true;
             }

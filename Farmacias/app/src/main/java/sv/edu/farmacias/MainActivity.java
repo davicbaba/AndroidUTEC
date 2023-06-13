@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -95,7 +96,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, Search.class);
 
         EditText search = findViewById(R.id.editTextTextPersonName4);
+        EditText distancia = findViewById(R.id.txtDistanciaBuscar);
+
+        if (TextUtils.isEmpty(distancia.getText())) {
+            distancia.setError("Este campo es requerido"); // establece un mensaje de error
+            return;
+        }
+
         intent.putExtra("search", search.getText().toString());
+        intent.putExtra("distance", distancia.getText().toString());
         startActivity(intent);
     }
 
