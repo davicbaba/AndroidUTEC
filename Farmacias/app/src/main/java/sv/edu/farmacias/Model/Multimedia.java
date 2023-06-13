@@ -1,11 +1,12 @@
 package sv.edu.farmacias.Model;
 
 public class Multimedia {
-    public Multimedia(int codigo, String url, boolean esPrincipal, int orden) {
+    public Multimedia(int codigo, String url, boolean esPrincipal, int orden,int idProducto) {
         this.codigo = codigo;
         this.url = url;
         this.esPrincipal = esPrincipal;
         this.orden = orden;
+        this.idProducto = idProducto;
     }
 
     private int codigo;
@@ -13,10 +14,14 @@ public class Multimedia {
     private boolean esPrincipal;
     private int orden;
 
+    private int idProducto;
+
     // Getters
     public int getCodigo() {
         return codigo;
     }
+
+    public int getIdProducto(){return idProducto;}
 
     public String getUrl() {
         return url;

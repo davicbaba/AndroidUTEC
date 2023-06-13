@@ -87,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         List<Farmacia> farmacias = new ArrayList<Farmacia>();
-        farmacias.add(new Farmacia(1,"San Nicolas Mall San Gabriel","2555-5555", 13.731874,-88.883658 ));
+        farmacias.add(new Farmacia(1,"San Nicolas Mall San Gabriel","2555-5555", 13.7936244,-89.2309555 ));
 
         InsertarFarmacias(db, farmacias);
 
@@ -98,13 +98,63 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("insert into ProductoFarmacia(idProducto,idFarmacia,disponiblidad,precioActual,precioNormal) values(2,1,1,10,10)");
     }
 
+    private void InsertarProducto(SQLiteDatabase db,List<Producto> productos) {
+
+        // Recorrer la lista de farmacias
+        for (Producto producto : productos) {
+            // Crear un nuevo mapa de valores, donde los nombres de las columnas son las claves
+            ContentValues values = new ContentValues();
+            values.put("codigo", producto.getCodigo());
+            values.put("nombre", producto.getNombre());
+
+            // Insertar la nueva fila, el valor de retorno es el valor de la clave primaria
+            long newRowId = db.insert("producto", null, values);
+        }
+    }
+
+
+    private void InsertarMultimedia(SQLiteDatabase db,List<Multimedia> multimedias) {
+
+        // Recorrer la lista de farmacias
+        for (Multimedia multimedia : multimedias) {
+            // Crear un nuevo mapa de valores, donde los nombres de las columnas son las claves
+            ContentValues values = new ContentValues();
+            values.put("Url", multimedia.getUrl());
+            values.put("esPrincipal", multimedia.getEsPrincipal());
+            values.put("orden", multimedia.getOrden());
+            values.put("idProducto", multimedia.getIdProducto());
+
+            // Insertar la nueva fila, el valor de retorno es el valor de la clave primaria
+            long newRowId = db.insert("Multimedia", null, values);
+        }
+    }
+
+    private void InsertarProductoFarmacia(SQLiteDatabase db,List<ProductoFarmacia> productoFarmacias) {
+
+        // Recorrer la lista de farmacias
+        for (ProductoFarmacia productoFarmacia : productoFarmacias) {
+            // Crear un nuevo mapa de valores, donde los nombres de las columnas son las claves
+            ContentValues values = new ContentValues();
+            values.put("idProducto", productoFarmacia.getIdProducto());
+            values.put("idFarmacia", productoFarmacia.getIdFarmacia());
+            values.put("disponiblidad", productoFarmacia.getDisponibilidad());
+            values.put("precioActual", productoFarmacia.getPrecioActual());
+            values.put("precioNormal", productoFarmacia.getPrecioNormal());
+
+
+            // Insertar la nueva fila, el valor de retorno es el valor de la clave primaria
+            long newRowId = db.insert("ProductoFarmacia", null, values);
+        }
+    }
+
+
     private void InsertarFarmacias(SQLiteDatabase db,List<Farmacia> farmacias) {
 
         // Recorrer la lista de farmacias
         for (Farmacia farmacia : farmacias) {
             // Crear un nuevo mapa de valores, donde los nombres de las columnas son las claves
             ContentValues values = new ContentValues();
-            values.put("codigo", farmacia.getCodigo());
+            values.put("id", farmacia.getCodigo());
             values.put("nombre", farmacia.getNombre());
             values.put("telefono", farmacia.getTelefono());
             values.put("latitud", farmacia.getLatitud());
@@ -294,7 +344,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 int orden =cursor.getInt(cursor.getColumnIndex("orden"));
 
                 Multimedia multimedia = new
-                        Multimedia(codigo,url,esPrincipal,orden);
+                        Multimedia(codigo,url,esPrincipal,orden,idProducto);
 
                 multimedias.add(multimedia);
             } while (cursor.moveToNext());
