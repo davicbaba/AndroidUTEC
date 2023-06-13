@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
+import sv.edu.farmacias.Model.Multimedia;
 import sv.edu.farmacias.Model.Producto;
 import sv.edu.farmacias.Model.ProductoFarmacia;
 import sv.edu.farmacias.ProductDetail;
@@ -74,12 +75,16 @@ public class ProductListViewAdapter extends BaseAdapter {
         TextView txtPrecio = convertView.findViewById(R.id.txtPrecio);
         TextView txtNombre = convertView.findViewById(R.id.txtNombreProducto);
 
-
-
         String precio = GetPrecioMasBarato(currentProduct);
 
+        Multimedia multimediaPrincipal = currentProduct.getMultimedia()
+                .stream()
+                .filter(Multimedia:: getEsPrincipal)
+                .findFirst()
+                .orElse(null);
 
-        Picasso.get().load("https://fasani.b-cdn.net/productos/ecommerce/A104009.png").into(imageView);
+     if(multimediaPrincipal != null)
+        Picasso.get().load(multimediaPrincipal.getUrl()).into(imageView);
 
         //imageView.setImageResource(currentProduct.getImage());
         txtPrecio.setText(precio);

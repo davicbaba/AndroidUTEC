@@ -369,6 +369,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Producto producto = new
                         Producto(codigo, nombre,new ArrayList<ProductoFarmacia>(),new ArrayList<Multimedia>());
 
+                List<Multimedia> multimedias = GetMultimediaProductos(codigo);
+
+                List<ProductoFarmacia> productoFarmacias = GetProductoFarmacia(codigo);
+                producto.setMultimedia(multimedias);
+                producto.setProductoFarmacia(productoFarmacias);
+
                 productos.add(producto);
 
             } while (cursor.moveToNext());
