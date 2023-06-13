@@ -226,8 +226,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT producto.codigo, producto.nombre " +
                 "FROM producto " +
                 "INNER JOIN ProductoFarmacia ON producto.codigo = ProductoFarmacia.idProducto " +
-                "WHERE producto.nombre LIKE '%"+search+"%' AND ProductoFarmacia.disponibilidad > 0 " +
-                " AND ProductoFarmacia.id IN ("+idsFarmacias+") " +
+                "WHERE producto.nombre LIKE '%"+search+"%' AND ProductoFarmacia.disponiblidad > 0 " +
+                " AND ProductoFarmacia.idFarmacia IN ("+idsFarmacias+") " +
                 " GROUP BY producto.codigo, producto.nombre";
 
         String[] selectionArgs = {};
