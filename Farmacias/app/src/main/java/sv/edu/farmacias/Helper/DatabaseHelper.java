@@ -94,7 +94,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("insert into Multimedia(Url, esPrincipal, orden,idProducto) values ('https://fasani.b-cdn.net/productos/ecommerce/A109323.jpg?class=Medium', 1 , 0, 1)");
         db.execSQL("insert into ProductoFarmacia(idProducto, idFarmacia, disponiblidad,precioActual, precioNormal) values (1,1,1,6.80,8.00)");
 
-        db.execSQL("insert into ProductoFarmacia(idProducto,idFarmacia,disponiblidad,precioActual,precioNormal) values(1,1,1,5,5)");
 
         db.execSQL("insert into ProductoFarmacia(idProducto,idFarmacia,disponiblidad,precioActual,precioNormal) values(2,1,1,10,10)");
     }
@@ -105,7 +104,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (Farmacia farmacia : farmacias) {
             // Crear un nuevo mapa de valores, donde los nombres de las columnas son las claves
             ContentValues values = new ContentValues();
-            values.put("Codigo", farmacia.getNombre());
+            values.put("codigo", farmacia.getCodigo());
             values.put("nombre", farmacia.getNombre());
             values.put("telefono", farmacia.getTelefono());
             values.put("latitud", farmacia.getLatitud());
