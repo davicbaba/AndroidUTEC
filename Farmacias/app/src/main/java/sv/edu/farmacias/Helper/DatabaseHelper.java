@@ -28,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         StringBuilder createTableFarmacia = new StringBuilder()
                                                 .append("CREATE TABLE Farmacia (")
-                                                .append("    id INTEGER PRIMARY KEY AUTOINCREMENT, ")
+                                                .append("    id INTEGER PRIMARY KEY , ")
                                                 .append("    nombre TEXT NOT NULL, ")
                                                 .append("    telefono TEXT NOT NULL, ")
                                                 .append("    latitud REAL NOT NULL, ")
@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         StringBuilder createTableProducto = new StringBuilder()
                                                 .append("CREATE TABLE Producto (")
-                                                .append("    codigo INTEGER PRIMARY KEY AUTOINCREMENT, ")
+                                                .append("    codigo INTEGER PRIMARY KEY, ")
                                                 .append("    nombre TEXT NOT NULL ")
                                                 .append(")");
 
@@ -80,21 +80,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createTableProductoFarmacia.toString());
         db.execSQL(createTableMultimedia.toString());
         db.execSQL(createTableUbicacionUsuario.toString());
-        db.execSQL("insert into producto(nombre) values('ACETAMINOFEN BAYER 500MG X 100 TABLETAS')");
-        db.execSQL("insert into producto(nombre) values('ACETAMINOFEN FORTE X 16 TABLETAS')");
-        db.execSQL("insert into producto(nombre) values('ACETOSIL INFANTIL JARABE FRASCO 60ML(Acetaminofen)')");
-        db.execSQL("insert into producto(nombre) values('HIBUPROFENO')");
+        db.execSQL("insert into producto(codigo,nombre) values(1,'ACETAMINOFEN BAYER 500MG X 100 TABLETAS')");
+        db.execSQL("insert into producto(codigo,nombre) values(2,'ACETAMINOFEN FORTE X 16 TABLETAS')");
+        db.execSQL("insert into producto(codigo,nombre) values(3,'ACETOSIL INFANTIL JARABE FRASCO 60ML(Acetaminofen)')");
+        db.execSQL("insert into producto(codigo,nombre) values(4,'HIBUPROFENO')");
 
 
         List<Farmacia> farmacias = new ArrayList<Farmacia>();
-        farmacias.add(new Farmacia(0,"San Nicolas Mall San Gabriel","2555-5555", 13.7941792,-89.2274556 ));
+        farmacias.add(new Farmacia(1,"San Nicolas Mall San Gabriel","2555-5555", 13.731874,-88.883658 ));
 
         InsertarFarmacias(db, farmacias);
 
         db.execSQL("insert into Multimedia(Url, esPrincipal, orden,idProducto) values ('https://fasani.b-cdn.net/productos/ecommerce/A109323.jpg?class=Medium', 1 , 0, 1)");
         db.execSQL("insert into ProductoFarmacia(idProducto, idFarmacia, disponiblidad,precioActual, precioNormal) values (1,1,1,6.80,8.00)");
 
+        db.execSQL("insert into ProductoFarmacia(idProducto,idFarmacia,disponiblidad,precioActual,precioNormal) values(1,1,1,5,5)");
 
+        db.execSQL("insert into ProductoFarmacia(idProducto,idFarmacia,disponiblidad,precioActual,precioNormal) values(2,1,1,10,10)");
     }
 
     private void InsertarFarmacias(SQLiteDatabase db,List<Farmacia> farmacias) {
@@ -103,6 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (Farmacia farmacia : farmacias) {
             // Crear un nuevo mapa de valores, donde los nombres de las columnas son las claves
             ContentValues values = new ContentValues();
+            values.put("Codigo", farmacia.getNombre());
             values.put("nombre", farmacia.getNombre());
             values.put("telefono", farmacia.getTelefono());
             values.put("latitud", farmacia.getLatitud());
@@ -216,12 +219,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return farmacias;
     }
 
-    public List<Producto> GetProducts(String search) {
+    public List<Producto> GetProducts(String search,String idsFarmacias) {
         List<Producto> productos = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         // Consulta para obtener las farmacias dentro del rango especificado
-        String query = "SELECT * from producto where nombre LIKE '%"+search+"%' ";
+        String query = "SELECT producto.codigo, producto.nombre " +
+                "FROM producto " +
+                "INNER JOIN ProductoFarmacia ON producto.codigo = ProductoFarmacia.idProducto " +
+                "WHERE producto.nombre LIKE '%"+search+"%' AND ProductoFarmacia.disponibilidad > 0 " +
+                " AND ProductoFarmacia.id IN ("+idsFarmacias+") " +
+                " GROUP BY producto.codigo, producto.nombre";
 
         String[] selectionArgs = {};
         Cursor cursor = db.rawQuery(query,selectionArgs);

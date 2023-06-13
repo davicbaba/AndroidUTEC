@@ -39,17 +39,34 @@ public class Search extends AppCompatActivity {
             startActivity(intentMain);
         }
 
-      //  List<Farmacia> farmacias =
-     //   _db.obtenerFarmaciasEnRango(ubicacion.getLatitud(), ubicacion.getLongitud(), 100);
-
-        CargarDatos(search);
+        CargarDatos(search,GetIdsFarmaciasByUbicacion());
     }
 
-    private void  CargarDatos(String searchdata)
+    private String GetIdsFarmaciasByUbicacion()
+    {
+        UbicacionUsuario ubicacion = _db.getUbicacionUsuario();
+        String ids = "";
+
+        List<Farmacia> farmacias =
+                _db.obtenerFarmaciasEnRango(ubicacion.getLatitud(), ubicacion.getLongitud(), 100);
+
+        for (Farmacia objeto : farmacias) {
+
+              if(ids =="")
+                ids  = "'" +objeto.getCodigo().toString() +"'";
+
+            if(ids !="")
+                ids  = ids + ",'"+  objeto.getCodigo().toString()+"'";
+        }
+
+        return ids;
+    }
+
+    private void  CargarDatos(String searchdata, String idsFarmacias)
     {
         _db = new DatabaseHelper(getBaseContext());
 
-        List<Producto> productos = _db.GetProducts(searchdata);
+        List<Producto> productos = _db.GetProducts(searchdata,idsFarmacias);
         ListView listView = findViewById(R.id.lst_productos);
         ProductListViewAdapter customAdapter = new ProductListViewAdapter(this, productos);
         listView.setAdapter(customAdapter);
@@ -78,13 +95,17 @@ public class Search extends AppCompatActivity {
         {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                CargarDatos(query);
+
+                String idsFarmacias =  GetIdsFarmaciasByUbicacion();
+                CargarDatos(query,idsFarmacias);
                 return  true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                CargarDatos(newText);
+
+                String idsFarmacias =  GetIdsFarmaciasByUbicacion();
+                CargarDatos(newText,idsFarmacias);
                 return true;
             }
         });
