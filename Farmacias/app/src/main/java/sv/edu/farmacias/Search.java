@@ -22,6 +22,7 @@ import sv.edu.farmacias.Model.UbicacionUsuario;
 public class Search extends AppCompatActivity {
 
     private DatabaseHelper _db;
+    private double _distance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,9 @@ public class Search extends AppCompatActivity {
 
         Intent intent = getIntent();
         String search = intent.getStringExtra("search");
-        double distance =  Double.parseDouble(intent.getStringExtra("distance"));
+        _distance =  Double.parseDouble(intent.getStringExtra("distance"));
+
+
 
         _db = new DatabaseHelper(getBaseContext());
 
@@ -42,7 +45,7 @@ public class Search extends AppCompatActivity {
             startActivity(intentMain);
         }
 
-        CargarDatos(search,GetIdsFarmaciasByUbicacion(distance));
+        CargarDatos(search,GetIdsFarmaciasByUbicacion(_distance));
     }
 
     private String GetIdsFarmaciasByUbicacion(double distanceInKm)
@@ -70,7 +73,7 @@ public class Search extends AppCompatActivity {
         _db = new DatabaseHelper(getBaseContext());
         List<Producto> productos = _db.GetProducts(searchdata,idsFarmacias);
         ListView listView = findViewById(R.id.lst_productos);
-        ProductListViewAdapter customAdapter = new ProductListViewAdapter(this, productos);
+        ProductListViewAdapter customAdapter = new ProductListViewAdapter(this, productos,_distance);
         listView.setAdapter(customAdapter);
 
     }

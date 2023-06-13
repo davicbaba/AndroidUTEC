@@ -13,7 +13,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="62dp"
         android:orientation="vertical">
 
         <TextView
@@ -28,9 +28,9 @@
             android:id="@+id/txtTituloPrecio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Precio mas bajo cerca de ti:"
             android:layout_marginLeft="150dp"
-            android:textSize="10sp"/>
+            android:text="Precio mas bajo cerca de ti:"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/txtPrecio"
@@ -39,7 +39,7 @@
             android:layout_marginLeft="150dp"
             android:text="$5.00"
             android:textColor="@color/anarajado_textview"
-            android:textSize="10sp"/>
+            android:textSize="10sp" />
 
 
     </LinearLayout>

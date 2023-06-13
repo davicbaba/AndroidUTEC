@@ -30,9 +30,11 @@ public class ProductListViewAdapter extends BaseAdapter {
     private Context context;
     private List<Producto> items;
 
-    public ProductListViewAdapter(Context context, List<Producto> items) {
+    private double distance;
+    public ProductListViewAdapter(Context context, List<Producto> items, double distance) {
         this.context = context;
         this.items = items;
+        this.distance = distance;
     }
 
     @Override
@@ -64,6 +66,7 @@ public class ProductListViewAdapter extends BaseAdapter {
                 Intent intent = new Intent(v.getContext(), ProductDetail.class);
                 String codigo = String.valueOf(clickedProduct.getCodigo());
                 intent.putExtra("idproducto", codigo);
+                intent.putExtra("distance", String.valueOf(distance));
                 v.getContext().startActivity(intent);
 
             }

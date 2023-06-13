@@ -101,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         productos.add(new Producto(3,"ATLEVIT TALCO PROMOCION",new ArrayList<>(), new ArrayList<>()));
-        multimedia.add(new Multimedia(0,"https://fasani.b-cdn.net/productos/ecommerce/A102468.jpg", true, 0,2));
+        multimedia.add(new Multimedia(0,"https://fasani.b-cdn.net/productos/ecommerce/A102468.jpg", true, 0,3));
         multimedia.add(new Multimedia(0,"https://walmartgt.vtexassets.com/arquivos/ids/175149-150-auto?v=637607002214270000&width=150&height=auto&aspect=true", false, 1,3));
         productoFarmacias.add(new ProductoFarmacia(3,1,30,3.59,3.59));
         productoFarmacias.add(new ProductoFarmacia(3,2,10,3.95,3.95));

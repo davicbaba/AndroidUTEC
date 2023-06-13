@@ -35,15 +35,23 @@ public class ProductDetail extends AppCompatActivity {
 
         Intent intent = getIntent();
         String idproducto = intent.getStringExtra("idproducto");
+        double distance =  Double.parseDouble(intent.getStringExtra("distance"));
 
         DatabaseHelper db = new DatabaseHelper(getBaseContext());
 
+
         UbicacionUsuario ubicacionUsuario = db.getUbicacionUsuario();
+
+        List<Farmacia> farmaciasCercanas = db.obtenerFarmaciasEnRango(ubicacionUsuario.getLatitud(),ubicacionUsuario.getLongitud(), distance);
+        List<Integer> idsFarmaciasCercanas = farmaciasCercanas.stream()
+                                                              .map(x -> x.getCodigo())
+                                                              .collect(Collectors.toList());
 
         Producto producto = db.GetById(Integer.parseInt(idproducto));
 
         List<Integer> idsFarmacias = producto.getProductoFarmacia()
                                              .stream()
+                                             .filter(x -> idsFarmaciasCercanas.contains(x.getIdFarmacia()))
                                              .map(x -> x.getIdFarmacia())
                                              .collect(Collectors.toList());
 
