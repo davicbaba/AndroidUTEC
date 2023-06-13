@@ -85,10 +85,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("insert into producto(nombre) values('ACETOSIL INFANTIL JARABE FRASCO 60ML(Acetaminofen)')");
         db.execSQL("insert into producto(nombre) values('HIBUPROFENO')");
 
+
         List<Farmacia> farmacias = new ArrayList<Farmacia>();
         farmacias.add(new Farmacia(0,"San Nicolas Mall San Gabriel","2555-5555", 13.7941792,-89.2274556 ));
 
         InsertarFarmacias(db, farmacias);
+
+        db.execSQL("insert into Multimedia(Url, esPrincipal, orden,idProducto) values ('https://fasani.b-cdn.net/productos/ecommerce/A109323.jpg?class=Medium', 1 , 0, 1)");
+        db.execSQL("insert into ProductoFarmacia(idProducto, idFarmacia, disponiblidad,precioActual, precioNormal) values (1,1,1,6.80,8.00)");
+
 
     }
 
@@ -257,8 +262,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         List<Multimedia> multimedias = GetMultimediaProductos(id);
 
+        List<ProductoFarmacia> productoFarmacias = GetProductoFarmacia(id);
         producto.setMultimedia(multimedias);
-
+        producto.setProductoFarmacia(productoFarmacias);
         return producto;
     }
 
@@ -275,7 +281,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 int codigo = cursor.getInt(cursor.getColumnIndex("codigo"));
-                String url = cursor.getString(cursor.getColumnIndex("nombre"));
+                String url = cursor.getString(cursor.getColumnIndex("Url"));
                 int principal = cursor.getInt(cursor.getColumnIndex("esPrincipal"));
                 boolean esPrincipal = principal == 1 ? true : false;
                 int orden =cursor.getInt(cursor.getColumnIndex("orden"));
@@ -291,6 +297,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
 
         return multimedias;
+    }
+
+    public List<ProductoFarmacia> GetProductoFarmacia(int idProducto) {
+        List<ProductoFarmacia>  productosFarmacia = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Consulta para obtener las farmacias dentro del rango especificado
+        String query = "SELECT * from ProductoFarmacia where idProducto ="+idProducto+" ";
+
+        String[] selectionArgs = {};
+        Cursor cursor = db.rawQuery(query,selectionArgs);
+        if (cursor.moveToFirst()) {
+            do {
+                int idFarmacia = cursor.getInt(cursor.getColumnIndex("idFarmacia"));
+                int disponiblidad = cursor.getInt(cursor.getColumnIndex("disponiblidad"));
+                double precioActual = cursor.getDouble(cursor.getColumnIndex("precioActual"));
+                double precioNormal = cursor.getDouble(cursor.getColumnIndex("precioNormal"));
+
+                ProductoFarmacia productoFarmacia = new ProductoFarmacia(idProducto,idFarmacia, disponiblidad, precioActual, precioNormal);
+
+                productosFarmacia.add(productoFarmacia);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+
+
+        return productosFarmacia;
     }
 
     public List<Farmacia> getFarmacias() {

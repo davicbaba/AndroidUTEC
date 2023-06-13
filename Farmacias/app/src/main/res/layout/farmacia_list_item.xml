@@ -51,5 +51,27 @@
             android:text="Ubicacion" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/txtDisponible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Disponible"
+            android:layout_marginLeft="30dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/txtDistanciakm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20km"
+            android:layout_marginLeft="180dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
 
 </LinearLayout>
