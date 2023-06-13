@@ -1,10 +1,12 @@
 package sv.edu.farmacias.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +21,9 @@ import java.util.Optional;
 
 import sv.edu.farmacias.Model.Producto;
 import sv.edu.farmacias.Model.ProductoFarmacia;
+import sv.edu.farmacias.ProductDetail;
 import sv.edu.farmacias.R;
+import sv.edu.farmacias.Search;
 
 public class ProductListViewAdapter extends BaseAdapter {
     private Context context;
@@ -56,7 +60,10 @@ public class ProductListViewAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Producto clickedProduct = items.get(position);
 
-                Toast.makeText(context, clickedProduct.getNombre(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(v.getContext(), ProductDetail.class);
+                String codigo = String.valueOf(clickedProduct.getCodigo());
+                intent.putExtra("idproducto", codigo);
+                v.getContext().startActivity(intent);
 
             }
         });

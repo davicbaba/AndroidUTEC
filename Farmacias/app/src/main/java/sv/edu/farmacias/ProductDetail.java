@@ -3,6 +3,7 @@ package sv.edu.farmacias;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -32,11 +33,14 @@ public class ProductDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_product_detail);
 
+        Intent intent = getIntent();
+        String idproducto = intent.getStringExtra("idproducto");
+
         DatabaseHelper db = new DatabaseHelper(getBaseContext());
 
         UbicacionUsuario ubicacionUsuario = db.getUbicacionUsuario();
 
-        Producto producto = db.GetById(1);
+        Producto producto = db.GetById(Integer.parseInt(idproducto));
 
         List<Integer> idsFarmacias = producto.getProductoFarmacia()
                                              .stream()

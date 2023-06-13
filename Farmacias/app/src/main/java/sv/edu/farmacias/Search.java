@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 import androidx.appcompat.widget.SearchView;
@@ -65,11 +67,11 @@ public class Search extends AppCompatActivity {
     private void  CargarDatos(String searchdata, String idsFarmacias)
     {
         _db = new DatabaseHelper(getBaseContext());
-
         List<Producto> productos = _db.GetProducts(searchdata,idsFarmacias);
         ListView listView = findViewById(R.id.lst_productos);
         ProductListViewAdapter customAdapter = new ProductListViewAdapter(this, productos);
         listView.setAdapter(customAdapter);
+
     }
 
     @Override

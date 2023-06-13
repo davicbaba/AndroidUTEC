@@ -235,7 +235,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         // Definir la consulta SQL
-        String query = "SELECT * FROM Farmacia WHERE latitud BETWEEN ? AND ? AND longitud BETWEEN ? AND ?";
+        String query = "SELECT * FROM Farmacia  WHERE latitud BETWEEN ? AND ? AND longitud BETWEEN ? AND ?";
 
         // Definir los parámetros de la consulta
         String[] params = new String[] {
@@ -272,11 +272,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<Producto> productos = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
+        String like = "";
+
+        if(search != "" && search != null)
+         like = " producto.nombre LIKE '%"+search+"%' and ";
+
         // Consulta para obtener las farmacias dentro del rango especificado
         String query = "SELECT producto.codigo, producto.nombre " +
                 "FROM producto " +
                 "INNER JOIN ProductoFarmacia ON producto.codigo = ProductoFarmacia.idProducto " +
-                "WHERE producto.nombre LIKE '%"+search+"%' AND ProductoFarmacia.disponiblidad > 0 " +
+                "WHERE "+ like+" ProductoFarmacia.disponiblidad > 0 " +
                 " AND ProductoFarmacia.idFarmacia IN ("+idsFarmacias+") " +
                 " GROUP BY producto.codigo, producto.nombre";
 
